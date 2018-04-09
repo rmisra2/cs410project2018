@@ -5,11 +5,16 @@ infile = 'dataset/review.json'
 # TODO: make sure data folder exists
 outfile = 'data/reviews.json'
 
-def parse_reviews_dataset():
+def parse_reviews_dataset(n=-1):
     """
     creates a json file of all yelp dataset reviews with necessary attributes
+    n specifies the number of reviews to parse. if left unchanged, it will parse all reviews
     """
     reviews = []
+
+    if n > 0:
+        outfile = 'data/reviews_{}.json'.format(n)
+        c = 0
 
     with open(infile) as f:
         for line in f:
@@ -21,6 +26,11 @@ def parse_reviews_dataset():
                 'text': review_data.get('text')
             }
             reviews.append(review)
+
+            if n > 0:
+                c += 1
+                if c > n:
+                    break
 
     with open(outfile, 'w') as outf:
         json.dump(reviews, outf)
@@ -44,4 +54,4 @@ def group_reviews_by_users(reviews):
     return user_reviews
 
 
-# parse_reviews_dataset()
+# parse_reviews_dataset(1000)
