@@ -53,5 +53,20 @@ def group_reviews_by_users(reviews):
         user_reviews[user_id].append(review_without_user_id)
     return user_reviews
 
+def create_combined_user_reviews(reviews):
+    """
+    combines all a user's reviews into one combined string
+    - param reviews: list of reviews
+    - returns a dict where:
+        key: user_id
+        value: a string which is all the reviews for that user_id combined
+    """
+    user_reviews = group_reviews_by_users(data)
+    user_combined_reviews = {}
+    for user_id, reviews in user_reviews.items():
+        combined_reviews = ''.join([r.get('text') for r in reviews])
+        user_combined_reviews[user_id] = combined_reviews
+    return user_combined_reviews
+
 
 # parse_reviews_dataset(1000)
