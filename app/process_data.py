@@ -77,5 +77,3 @@ def create_combined_user_reviews(reviews):
         user_combined_reviews[user_id] = combined_reviews
     return user_combined_reviews
 
-
-parse_reviews_dataset(101)
