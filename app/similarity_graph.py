@@ -34,7 +34,7 @@ def similarity(text1, text2):
 #     id1: [{ id2: 0.5 }, { id3: 0.5 }, { id4: 0.3 }],
 #     id1: [{ id2: 0.7 }, { id3: 0.1 }, { id4: 0.5 }]
 # }
-def create_sim_graph(user_combined_reviews):
+def create_similarity_graph(user_combined_reviews):
     """
     creates a similarity graph by generating similarity score for
     every user pair

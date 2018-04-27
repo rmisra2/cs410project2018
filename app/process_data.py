@@ -70,7 +70,7 @@ def create_combined_user_reviews(reviews):
         key: user_id
         value: a string which is all the reviews for that user_id combined
     """
-    user_reviews = group_reviews_by_users(data)
+    user_reviews = group_reviews_by_users(reviews)
     user_combined_reviews = {}
     for user_id, reviews in user_reviews.items():
         combined_reviews = ''.join([r.get('text') for r in reviews])
