@@ -12,7 +12,7 @@ pip install -r requirements.txt
 
 Then run:
 ```
-python3 setup.py
+python3 app/setup.py
 ```
 
 You should theoritically only need to do it once.
