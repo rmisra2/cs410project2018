@@ -1,22 +1,28 @@
 import json
+import os
 
 infile = './../dataset/review.json'
 
 # TODO: make sure data folder exists
 outfile = './../data/reviews.json'
 
+dirname = os.path.dirname(__file__)
+infile_filename = os.path.join(dirname, infile)
+outfile_filename = os.path.join(dirname, outfile)
+
 def parse_reviews_dataset(n=-1):
     """
     creates a json file of all yelp dataset reviews with necessary attributes
-    n specifies the number of reviews to parse. if left unchanged, it will parse all reviews
+    param n: specifies the number of reviews to parse. if left unchanged, it will parse all reviews
     """
     reviews = []
 
     if n > 0:
         outfile = './../data/reviews_{}.json'.format(n)
+        outfile_filename = os.path.join(dirname, outfile)
         c = 0
 
-    with open(infile) as f:
+    with open(infile_filename) as f:
         for line in f:
             review_data = json.loads(line)
             review = {
@@ -32,13 +38,16 @@ def parse_reviews_dataset(n=-1):
                 if c > n:
                     break
 
-    with open(outfile, 'w') as outf:
+    with open(outfile_filename, 'w') as outf:
         json.dump(reviews, outf)
 
 def group_reviews_by_users(reviews):
     """
     given a list of reviews, this will group them by user
-    returns a dict where the key is the user_id and the value is a list of their reviews
+    - param reviews: list of reviews
+    - returns a dict where:
+        key: user_id
+        value: list of user_id's reviews
     """
     user_reviews = {}
     for review in reviews:
@@ -69,4 +78,4 @@ def create_combined_user_reviews(reviews):
     return user_combined_reviews
 
 
-parse_reviews_dataset(100)
+parse_reviews_dataset(101)
