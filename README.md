@@ -18,4 +18,6 @@ python3 app/setup.py
 You should theoritically only need to do it once.
 
 ## Processing Dataset
-In `main.py`, uncomment the call to `parse_reviews_dataset()` and run it. This will create the reviews data we will need. It's slow and uses a lot of RAM, so make sure you comment it out after you run it once.
+`setup.py` will create the reviews data file we will need.
+
+It will call the `parse_reviews_dataset()` function. It's slow and uses a lot of RAM, so make sure you use a reasonable review size.
