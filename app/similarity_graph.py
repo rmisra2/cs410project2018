@@ -20,40 +20,34 @@ def similarity(text1, text2):
     tfidf = vectorizer.fit_transform([text1, text2])
     return ((tfidf * tfidf.T).A)[0,1]
 
-# # what `create_combined_user_reviews` would return
-# {
-#     id1: 'text',
-#     id2: 'texttt',
-#     id3: 'skjdhfs',
-#     id4: 'review',
-# }
+def average_reviews_similarity(user1, user2):
+    similarities = []
+    for u1_reviews in user1.values():
+        for u2_reviews in user2.values():
+            for u1_review in u1_reviews:
+                for u2_review in u2_reviews:
+                    review_similarity = similarity(u1_review['text'], u2_review['text'])
+                    similarities.append(review_similarity)
+    average = sum(similarities, 0.0) / len(similarities)
+    return average
 
-# {
-#     id1: [{ id2: 0.3 }, { id3: 0.2 }, { id4: 0.4 }],
-#     id1: [{ id2: 0.2 }, { id3: 0.4 }, { id4: 0.7 }],
-#     id1: [{ id2: 0.5 }, { id3: 0.5 }, { id4: 0.3 }],
-#     id1: [{ id2: 0.7 }, { id3: 0.1 }, { id4: 0.5 }]
-# }
-def create_similarity_graph(user_combined_reviews):
+def create_similarity_graph(user_reviews):
     """
-    creates a similarity graph by generating similarity score for
-    every user pair
-    - param reviews: return value from 'create_combined_user_reviews'
+    creates a similarity graph by generating a similarity score for every user pair
+    - param user_reviews: return value from 'group_reviews_by_users'
     - returns a dict where:
         key: user_id
-        value: array of dictionaries where the key = every user but user_id and
-        value = their respective similarity score per
+        value: list of dicts where:
+            key = other's user id
+            value = their respective similarity score
     """
-    user_dict = {}
-    for user, review in user_combined_reviews.items():
-        user_dict[user] = []
-        for other,others_review in user_combined_reviews.items():
-            if other != user:
-                other_dict = {}
-                similarity_score = similarity(review,others_review)
-                other_dict[other] = similarity_score
-                user_dict[user].append(other_dict)
-    return user_dict
-
-#testing:
-#dict = {'id1':'i hate this restaurant', 'id2': 'i really like the food at this restaurant', 'id3': ' this restaurant had decent food and lighting', 'id4': 'though the lighting and food was fine at this restaurant, this place was smelly', 'id5':' restaurant unrelated similarity to the least'}
+    similarity_graph = {}
+    for curr_user_id, curr_user_reviews in user_reviews.items():
+        similarity_graph[curr_user_id] = []
+        for other_user_id, other_user_reviews in user_reviews.items():
+            if curr_user_id != other_user_id:
+                curr_user = { curr_user_id: curr_user_reviews }
+                other_user = { other_user_id: other_user_reviews }
+                similarity_score = average_reviews_similarity(curr_user, other_user)
+                similarity_graph[curr_user_id].append({ other_user_id: similarity_score })
+    return similarity_graph
