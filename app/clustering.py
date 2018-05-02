@@ -1,4 +1,5 @@
 import networkx as nx
+import community
 
 def convert_similarity_graph_to_nx_graph(similarity_graph, similarity_threshold):
     ids = similarity_graph.keys()
@@ -13,4 +14,3 @@ def convert_similarity_graph_to_nx_graph(similarity_graph, similarity_threshold)
     graph.add_nodes_from(ids)
     graph.add_weighted_edges_from(edges)
     return graph
-

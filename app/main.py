@@ -1,5 +1,6 @@
 import networkx as nx
 import os, json
+import community
 from similarity_graph import create_similarity_graph
 from process_data import group_reviews_by_users
 from clustering import convert_similarity_graph_to_nx_graph
@@ -12,4 +13,8 @@ with open(reviews_file) as rf:
     grouped_user_reviews = group_reviews_by_users(reviews)
     similarity_graph = create_similarity_graph(grouped_user_reviews)
     graph = convert_similarity_graph_to_nx_graph(similarity_graph, 0.1)
-    print(nx.clustering(graph))
+    part = community.best_partition(graph)
+    #mod = community.modularity(part,graph)
+    print(part)
+    print("--------------")
+    #print(mod)
