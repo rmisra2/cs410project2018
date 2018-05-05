@@ -6,7 +6,7 @@ from process_data import group_reviews_by_users
 from clustering import convert_similarity_graph_to_nx_graph
 
 dirname = os.path.dirname(__file__)
-reviews_file = os.path.join(dirname, './../data/reviews_100.json')
+reviews_file = os.path.join(dirname, './../data/reviews_200.json')
 
 with open(reviews_file) as rf:
     reviews = json.load(rf)
