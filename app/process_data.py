@@ -2,13 +2,21 @@ import json
 import os
 
 infile = './../dataset/review.json'
+infile_restaurants = './../dataset/business.json'
 
 # TODO: make sure data folder exists
 outfile = './../data/reviews.json'
+outfile_restaurants = './../data/restaurants.json'
 
 dirname = os.path.dirname(__file__)
+
 infile_filename = os.path.join(dirname, infile)
 outfile_filename = os.path.join(dirname, outfile)
+
+infile_restaurants_filename = os.path.join(dirname, infile_restaurants)
+outfile_restaurants_filename = os.path.join(dirname, outfile_restaurants)
+
+BUSINESS_CATEGORIES = ['Restaurants', 'Food']
 
 def parse_reviews_dataset(n=-1):
     """
@@ -29,7 +37,8 @@ def parse_reviews_dataset(n=-1):
                 'review_id': review_data.get('review_id'),
                 'user_id': review_data.get('user_id'),
                 'business_id': review_data.get('business_id'),
-                'text': review_data.get('text')
+                'text': review_data.get('text'),
+                'stars': review_data.get('stars')
             }
             reviews.append(review)
 
@@ -77,3 +86,37 @@ def create_combined_user_reviews(reviews):
         user_combined_reviews[user_id] = combined_reviews
     return user_combined_reviews
 
+def parse_business_dataset(n=-1):
+    """
+    creates a json file of all yelp dataset restaurants with necessary attributes
+    param n: specifies the number of restaurants to parse. if left unchanged, it will parse all restaurants
+    """
+    restaurants = {}
+
+    if n > 0:
+        c = 0
+
+    with open(infile_restaurants_filename) as f:
+        for line in f:
+            restaurant_data = json.loads(line)
+            restaurant = {
+                'name': restaurant_data.get('name'),
+                'stars': restaurant_data.get('stars'),
+                'review_count': restaurant_data.get('review_count')
+            }
+
+            restaurant_id = restaurant_data.get('business_id')
+            restaurant_categories = restaurant_data.get('categories')
+            if any(c for c in restaurant_categories if c in BUSINESS_CATEGORIES):
+                restaurants[restaurant_id] = restaurant
+
+            if n > 0:
+                c += 1
+                if c > n:
+                    break
+
+    outfile_restaurants = './../data/restaurants_{}.json'.format(len(restaurants))
+    outfile_restaurants_filename = os.path.join(dirname, outfile_restaurants)
+
+    with open(outfile_restaurants_filename, 'w') as outf:
+        json.dump(restaurants, outf)
