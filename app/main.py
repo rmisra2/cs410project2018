@@ -9,7 +9,7 @@ from reverse_index import create_adjusted_reviews_for_restaurants, adjusted_sear
 
 NUM_REVIEWS = 200
 NUM_RESTAURANTS = 69047
-SIMILARITY_THRESHOLD = 0.1
+SIMILARITY_THRESHOLD = 0.5
 
 # TODO: explicitly set the number of partitions?
 def create_partition():
@@ -101,7 +101,7 @@ def generate_adjusted_search():
     search_output_filename = os.path.join(dirname, search_output_file)
     with open(search_output_filename, 'w') as asof:
         print('generating search results')
-        output = adjusted_search(adjusted_reviews)
+        output = adjusted_search(adjusted_reviews, -1)
         for line in output:
             asof.write('{}\n'.format(line))
         print('search results file created: {}'.format(search_output_filename))
