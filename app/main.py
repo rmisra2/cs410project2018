@@ -11,8 +11,7 @@ NUM_REVIEWS = 200
 NUM_RESTAURANTS = 69047
 SIMILARITY_THRESHOLD = 0.5
 
-# TODO: explicitly set the number of partitions?
-def create_partition():
+def generate_similarity_graph():
     dirname = os.path.dirname(__file__)
     reviews_file = './../data/reviews_{}.json'.format(NUM_REVIEWS)
     reviews_filename = os.path.join(dirname, reviews_file)
@@ -34,6 +33,13 @@ def create_partition():
         with open(similarity_graph_filename, 'w') as sgf:
             json.dump(similarity_graph, sgf)
             print('similarity graph file created: {}'.format(similarity_graph_filename))
+
+# TODO: explicitly set the number of partitions?
+def create_partition():
+    similarity_graph_file = './../data/similarity_graph_{}.json'.format(NUM_REVIEWS)
+    similarity_graph_filename = os.path.join(dirname, similarity_graph_file)
+    with open(similarity_graph_filename, 'w') as sgf:
+        similarity_graph = json.load(sgf)
 
         print('creating networkx graph')
         graph = convert_similarity_graph_to_nx_graph(similarity_graph, SIMILARITY_THRESHOLD)
@@ -107,6 +113,7 @@ def generate_adjusted_search():
         print('search results file created: {}'.format(search_output_filename))
 
 
+generate_similarity_graph()
 create_partition()
 create_reverse_index()
 generate_adjusted_search()
