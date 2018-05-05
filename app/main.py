@@ -1,6 +1,7 @@
 import networkx as nx
 import os, json
 import community
+import time
 from similarity_graph import create_similarity_graph
 from process_data import create_combined_user_reviews
 from clustering import convert_similarity_graph_to_nx_graph
@@ -23,7 +24,10 @@ def create_partition():
         print('grouping users')
         combined_user_reviews = create_combined_user_reviews(reviews)
         print('creating user similarity graph')
+        t1 = time.process_time()
         similarity_graph = create_similarity_graph(combined_user_reviews)
+        t2 = time.process_time()
+        print('similarity graph time elapsed: {}'.format(t2 - t1))
         print('creating networkx graph')
         graph = convert_similarity_graph_to_nx_graph(similarity_graph, 0.1)
         print('clustering users')
