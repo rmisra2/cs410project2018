@@ -36,9 +36,10 @@ def generate_similarity_graph():
 
 # TODO: explicitly set the number of partitions?
 def create_partition():
+    dirname = os.path.dirname(__file__)
     similarity_graph_file = './../data/similarity_graph_{}.json'.format(NUM_REVIEWS)
     similarity_graph_filename = os.path.join(dirname, similarity_graph_file)
-    with open(similarity_graph_filename, 'w') as sgf:
+    with open(similarity_graph_filename) as sgf:
         similarity_graph = json.load(sgf)
 
         print('creating networkx graph')
