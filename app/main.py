@@ -11,30 +11,43 @@ NUM_REVIEWS = 200
 NUM_RESTAURANTS = 69047
 
 dirname = os.path.dirname(__file__)
+
 reviews_file = './../data/reviews_{}.json'.format(NUM_REVIEWS)
 reviews_filename = os.path.join(dirname, reviews_file)
 
 restaurants_file = './../data/restaurants_{}.json'.format(NUM_RESTAURANTS)
 restaurants_filename = os.path.join(dirname, restaurants_file)
 
+similarity_graph_file = './../data/similarity_graph_{}.json'.format(NUM_REVIEWS)
+similarity_graph_filename = os.path.join(dirname, similarity_graph_file)
+
+partition_file = './../data/partition_{}.json'.format(NUM_REVIEWS)
+partition_filename = os.path.join(dirname, partition_file)
+
 # TODO: explicitly set the number of partitions?
 def create_partition():
     with open(reviews_filename) as rf:
         reviews = json.load(rf)
+
         print('grouping users')
         combined_user_reviews = create_combined_user_reviews(reviews)
+
         print('creating user similarity graph')
         t1 = time.process_time()
         similarity_graph = create_similarity_graph(combined_user_reviews)
         t2 = time.process_time()
         print('similarity graph time elapsed: {}'.format(t2 - t1))
+
+        with open(similarity_graph_filename, 'w') as sgf:
+            json.dump(similarity_graph, sgf)
+            print('similarity graph file created: {}'.format(similarity_graph_filename))
+
         print('creating networkx graph')
         graph = convert_similarity_graph_to_nx_graph(similarity_graph, 0.1)
+
         print('clustering users')
         partition = community.best_partition(graph)
 
-        partition_file = './../data/partition_{}.json'.format(NUM_REVIEWS)
-        partition_filename = os.path.join(dirname, partition_file)
         with open(partition_filename, 'w') as pf:
             json.dump(partition, pf)
             print('partition file created: {}'.format(partition_filename))
