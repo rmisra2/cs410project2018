@@ -4,7 +4,7 @@ import community
 from similarity_graph import create_similarity_graph
 from process_data import group_reviews_by_users
 from clustering import convert_similarity_graph_to_nx_graph
-from reverse_index import create_adjusted_reviews_for_restaurants
+from reverse_index import create_adjusted_reviews_for_restaurants, adjusted_search
 
 NUM_REVIEWS = 200
 NUM_RESTAURANTS = 69047
@@ -20,15 +20,20 @@ restaurants_filename = os.path.join(dirname, restaurants_file)
 def create_partition():
     with open(reviews_filename) as rf:
         reviews = json.load(rf)
+        print('grouping users')
         grouped_user_reviews = group_reviews_by_users(reviews)
+        print('creating user similarity graph')
         similarity_graph = create_similarity_graph(grouped_user_reviews)
+        print('creating networkx graph')
         graph = convert_similarity_graph_to_nx_graph(similarity_graph, 0.1)
+        print('clustering users')
         partition = community.best_partition(graph)
 
         partition_file = './../data/partition_{}.json'.format(NUM_REVIEWS)
         partition_filename = os.path.join(dirname, partition_file)
         with open(partition_filename, 'w') as pf:
             json.dump(partition, pf)
+            print('partition file created: {}'.format(partition_filename))
 
 def create_reverse_index():
     with open(reviews_filename) as rf:
@@ -42,6 +47,7 @@ def create_reverse_index():
     with open(partition_filename) as pf:
         partition = json.load(pf)
 
+    print('creating adjusted reviews for restaurants')
     adjusted_restaurant_reviews = create_adjusted_reviews_for_restaurants(
         reviews,
         restaurants,
@@ -52,6 +58,7 @@ def create_reverse_index():
     adjusted_restaurants_filename = os.path.join(dirname, adjusted_restaurants_file)
     with open(adjusted_restaurants_filename, 'w') as arf:
         json.dump(adjusted_restaurant_reviews, arf)
+        print('adjusted restaurants file created: {}'.format(adjusted_restaurants_filename))
 
     adjusted_restaurants_filtered_file = './../data/adjusted_restaurants_filtered_{}.json'.format(NUM_RESTAURANTS)
     adjusted_restaurants_filtered_filename = os.path.join(dirname, adjusted_restaurants_filtered_file)
@@ -61,3 +68,24 @@ def create_reverse_index():
             if 'stars_by_cluster' in restaurant_data:
                 adjusted_restaurant_reviews_filtered[business_id] = restaurant_data
         json.dump(adjusted_restaurant_reviews_filtered, arff)
+        print('adjusted restaurants filtered file created: {}'.format(adjusted_restaurants_filtered_filename))
+
+def generate_adjusted_search():
+    adjusted_restaurants_filtered_file = './../data/adjusted_restaurants_filtered_{}.json'.format(NUM_RESTAURANTS)
+    adjusted_restaurants_filtered_filename = os.path.join(dirname, adjusted_restaurants_filtered_file)
+    with open(adjusted_restaurants_filtered_filename) as arff:
+        adjusted_reviews = json.load(arff)
+
+    search_output_file = './../data/search_output_{}.json'.format(NUM_RESTAURANTS)
+    search_output_filename = os.path.join(dirname, search_output_file)
+    with open(search_output_filename, 'w') as asof:
+        print('generating search results')
+        output = adjusted_search(adjusted_reviews)
+        for line in output:
+            asof.write('{}\n'.format(line))
+        print('search results file created: {}'.format(search_output_filename))
+
+
+create_partition()
+create_reverse_index()
+generate_adjusted_search()
