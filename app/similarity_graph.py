@@ -21,6 +21,10 @@ def similarity(text1, text2):
     return ((tfidf * tfidf.T).A)[0,1]
 
 def average_reviews_similarity(user1, user2):
+    """
+    calculates review text similarity for every review of one user's against the other's
+    NOTE: not being used anymore since it greatly increases runtime of pipeline
+    """
     similarities = []
     for u1_reviews in user1.values():
         for u2_reviews in user2.values():
@@ -31,10 +35,10 @@ def average_reviews_similarity(user1, user2):
     average = sum(similarities, 0.0) / len(similarities)
     return average
 
-def create_similarity_graph(user_reviews):
+def create_similarity_graph(user_combined_reviews):
     """
     creates a similarity graph by generating a similarity score for every user pair
-    - param user_reviews: return value from 'group_reviews_by_users'
+    - param user_reviews: return value from 'create_combined_user_reviews'
     - returns a dict where:
         key: user_id
         value: list of dicts where:
@@ -42,12 +46,11 @@ def create_similarity_graph(user_reviews):
             value = their respective similarity score
     """
     similarity_graph = {}
-    for curr_user_id, curr_user_reviews in user_reviews.items():
+    for curr_user_id, review in user_combined_reviews.items():
         similarity_graph[curr_user_id] = []
-        for other_user_id, other_user_reviews in user_reviews.items():
-            if curr_user_id != other_user_id:
-                curr_user = { curr_user_id: curr_user_reviews }
-                other_user = { other_user_id: other_user_reviews }
-                similarity_score = average_reviews_similarity(curr_user, other_user)
-                similarity_graph[curr_user_id].append({ other_user_id: similarity_score })
+        for other_user_id, others_review in user_combined_reviews.items():
+            if other_user_id != curr_user_id:
+                similarity_graph[curr_user_id].append({
+                    other_user_id: similarity(review, others_review)
+                })
     return similarity_graph

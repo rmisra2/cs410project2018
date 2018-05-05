@@ -2,7 +2,7 @@ import networkx as nx
 import os, json
 import community
 from similarity_graph import create_similarity_graph
-from process_data import group_reviews_by_users
+from process_data import create_combined_user_reviews
 from clustering import convert_similarity_graph_to_nx_graph
 from reverse_index import create_adjusted_reviews_for_restaurants, adjusted_search
 
@@ -21,9 +21,9 @@ def create_partition():
     with open(reviews_filename) as rf:
         reviews = json.load(rf)
         print('grouping users')
-        grouped_user_reviews = group_reviews_by_users(reviews)
+        combined_user_reviews = create_combined_user_reviews(reviews)
         print('creating user similarity graph')
-        similarity_graph = create_similarity_graph(grouped_user_reviews)
+        similarity_graph = create_similarity_graph(combined_user_reviews)
         print('creating networkx graph')
         graph = convert_similarity_graph_to_nx_graph(similarity_graph, 0.1)
         print('clustering users')
