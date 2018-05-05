@@ -101,7 +101,8 @@ def parse_business_dataset(n=-1):
             restaurant_data = json.loads(line)
             restaurant = {
                 'name': restaurant_data.get('name'),
-                'stars': restaurant_data.get('stars')
+                'stars': restaurant_data.get('stars'),
+                'review_count': restaurant_data.get('review_count')
             }
 
             restaurant_id = restaurant_data.get('business_id')

@@ -7,7 +7,7 @@ from clustering import convert_similarity_graph_to_nx_graph
 from reverse_index import create_adjusted_reviews_for_restaurants
 
 NUM_REVIEWS = 200
-NUM_RESTAURANTS = 88
+NUM_RESTAURANTS = 69047
 
 dirname = os.path.dirname(__file__)
 reviews_file = './../data/reviews_{}.json'.format(NUM_REVIEWS)
@@ -16,6 +16,7 @@ reviews_filename = os.path.join(dirname, reviews_file)
 restaurants_file = './../data/restaurants_{}.json'.format(NUM_RESTAURANTS)
 restaurants_filename = os.path.join(dirname, restaurants_file)
 
+# TODO: explicitly set the number of partitions?
 def create_partition():
     with open(reviews_filename) as rf:
         reviews = json.load(rf)
@@ -50,4 +51,13 @@ def create_reverse_index():
     adjusted_restaurants_file = './../data/adjusted_restaurants_{}.json'.format(NUM_RESTAURANTS)
     adjusted_restaurants_filename = os.path.join(dirname, adjusted_restaurants_file)
     with open(adjusted_restaurants_filename, 'w') as arf:
-            json.dump(adjusted_restaurant_reviews, arf)
+        json.dump(adjusted_restaurant_reviews, arf)
+
+    adjusted_restaurants_filtered_file = './../data/adjusted_restaurants_filtered_{}.json'.format(NUM_RESTAURANTS)
+    adjusted_restaurants_filtered_filename = os.path.join(dirname, adjusted_restaurants_filtered_file)
+    with open(adjusted_restaurants_filtered_filename, 'w') as arff:
+        adjusted_restaurant_reviews_filtered = {}
+        for business_id, restaurant_data in adjusted_restaurant_reviews.items():
+            if 'stars_by_cluster' in restaurant_data:
+                adjusted_restaurant_reviews_filtered[business_id] = restaurant_data
+        json.dump(adjusted_restaurant_reviews_filtered, arff)
