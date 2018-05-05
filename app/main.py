@@ -9,23 +9,14 @@ from reverse_index import create_adjusted_reviews_for_restaurants, adjusted_sear
 
 NUM_REVIEWS = 200
 NUM_RESTAURANTS = 69047
-
-dirname = os.path.dirname(__file__)
-
-reviews_file = './../data/reviews_{}.json'.format(NUM_REVIEWS)
-reviews_filename = os.path.join(dirname, reviews_file)
-
-restaurants_file = './../data/restaurants_{}.json'.format(NUM_RESTAURANTS)
-restaurants_filename = os.path.join(dirname, restaurants_file)
-
-similarity_graph_file = './../data/similarity_graph_{}.json'.format(NUM_REVIEWS)
-similarity_graph_filename = os.path.join(dirname, similarity_graph_file)
-
-partition_file = './../data/partition_{}.json'.format(NUM_REVIEWS)
-partition_filename = os.path.join(dirname, partition_file)
+SIMILARITY_THRESHOLD = 0.1
 
 # TODO: explicitly set the number of partitions?
 def create_partition():
+    dirname = os.path.dirname(__file__)
+    reviews_file = './../data/reviews_{}.json'.format(NUM_REVIEWS)
+    reviews_filename = os.path.join(dirname, reviews_file)
+    print('reviews_filename', reviews_filename)
     with open(reviews_filename) as rf:
         reviews = json.load(rf)
 
@@ -38,24 +29,36 @@ def create_partition():
         t2 = time.process_time()
         print('similarity graph time elapsed: {}'.format(t2 - t1))
 
+        similarity_graph_file = './../data/similarity_graph_{}.json'.format(NUM_REVIEWS)
+        similarity_graph_filename = os.path.join(dirname, similarity_graph_file)
         with open(similarity_graph_filename, 'w') as sgf:
             json.dump(similarity_graph, sgf)
             print('similarity graph file created: {}'.format(similarity_graph_filename))
 
         print('creating networkx graph')
-        graph = convert_similarity_graph_to_nx_graph(similarity_graph, 0.1)
+        graph = convert_similarity_graph_to_nx_graph(similarity_graph, SIMILARITY_THRESHOLD)
 
         print('clustering users')
+        t3 = time.process_time()
         partition = community.best_partition(graph)
+        t4 = time.process_time()
+        print('clustering time elapsed: {}'.format(t4 - t3))
 
+        partition_file = './../data/partition_{}.json'.format(NUM_REVIEWS)
+        partition_filename = os.path.join(dirname, partition_file)
         with open(partition_filename, 'w') as pf:
             json.dump(partition, pf)
             print('partition file created: {}'.format(partition_filename))
 
 def create_reverse_index():
+    dirname = os.path.dirname(__file__)
+    reviews_file = './../data/reviews_{}.json'.format(NUM_REVIEWS)
+    reviews_filename = os.path.join(dirname, reviews_file)
     with open(reviews_filename) as rf:
         reviews = json.load(rf)
 
+    restaurants_file = './../data/restaurants_{}.json'.format(NUM_RESTAURANTS)
+    restaurants_filename = os.path.join(dirname, restaurants_file)
     with open(restaurants_filename) as rsf:
         restaurants = json.load(rsf)
 
@@ -88,12 +91,13 @@ def create_reverse_index():
         print('adjusted restaurants filtered file created: {}'.format(adjusted_restaurants_filtered_filename))
 
 def generate_adjusted_search():
+    dirname = os.path.dirname(__file__)
     adjusted_restaurants_filtered_file = './../data/adjusted_restaurants_filtered_{}.json'.format(NUM_RESTAURANTS)
     adjusted_restaurants_filtered_filename = os.path.join(dirname, adjusted_restaurants_filtered_file)
     with open(adjusted_restaurants_filtered_filename) as arff:
         adjusted_reviews = json.load(arff)
 
-    search_output_file = './../data/search_output_{}.json'.format(NUM_RESTAURANTS)
+    search_output_file = './../data/search_output_{}.json'.format(NUM_REVIEWS)
     search_output_filename = os.path.join(dirname, search_output_file)
     with open(search_output_filename, 'w') as asof:
         print('generating search results')
