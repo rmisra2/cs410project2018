@@ -37,7 +37,8 @@ def parse_reviews_dataset(n=-1):
                 'review_id': review_data.get('review_id'),
                 'user_id': review_data.get('user_id'),
                 'business_id': review_data.get('business_id'),
-                'text': review_data.get('text')
+                'text': review_data.get('text'),
+                'stars': review_data.get('stars')
             }
             reviews.append(review)
 
@@ -90,7 +91,7 @@ def parse_business_dataset(n=-1):
     creates a json file of all yelp dataset restaurants with necessary attributes
     param n: specifies the number of restaurants to parse. if left unchanged, it will parse all restaurants
     """
-    restaurants = []
+    restaurants = {}
 
     if n > 0:
         c = 0
@@ -99,14 +100,14 @@ def parse_business_dataset(n=-1):
         for line in f:
             restaurant_data = json.loads(line)
             restaurant = {
-                'business_id': restaurant_data.get('business_id'),
                 'name': restaurant_data.get('name'),
                 'stars': restaurant_data.get('stars')
             }
 
+            restaurant_id = restaurant_data.get('business_id')
             restaurant_categories = restaurant_data.get('categories')
             if any(c for c in restaurant_categories if c in BUSINESS_CATEGORIES):
-                restaurants.append(restaurant)
+                restaurants[restaurant_id] = restaurant
 
             if n > 0:
                 c += 1
