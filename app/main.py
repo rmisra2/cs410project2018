@@ -97,7 +97,7 @@ def generate_adjusted_search():
     with open(adjusted_restaurants_filtered_filename) as arff:
         adjusted_reviews = json.load(arff)
 
-    search_output_file = './../data/search_output_{}.json'.format(NUM_REVIEWS)
+    search_output_file = './../data/search_output_{}.txt'.format(NUM_REVIEWS)
     search_output_filename = os.path.join(dirname, search_output_file)
     with open(search_output_filename, 'w') as asof:
         print('generating search results')
