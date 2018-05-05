@@ -27,7 +27,8 @@ def create_adjusted_reviews_for_restaurants(reviews, restaurants, clusters):
             # reviewed business is not in our set of restaurants
             # NOTE: this means that the review might not be for a restaurant
             # TODO: decide whether to include these
-            restaurant = {}
+            restaurants[business_id] = {}
+            restaurant = restaurants.get(business_id)
         if 'stars_by_cluster' not in restaurant:
             restaurant['stars_by_cluster'] = {}
         if cluster not in restaurant['stars_by_cluster']:
@@ -36,9 +37,10 @@ def create_adjusted_reviews_for_restaurants(reviews, restaurants, clusters):
 
     # second pass resets the stars_by_cluster's values to the average
     for restaurant_id, restaurant_data in restaurants.items():
-        for cluster, stars in restaurant_data['stars_by_cluster']:
-            cluster_stars = restaurant_data['stars_by_cluster'][cluster]
-            average_stars = sum(cluster_stars, 0.0) / len(cluster_stars)
-            restaurant_data['stars_by_cluster'][cluster] = average_stars
+        if 'stars_by_cluster' in restaurant_data:
+            for cluster, stars in restaurant_data['stars_by_cluster'].items():
+                cluster_stars = restaurant_data['stars_by_cluster'][cluster]
+                average_stars = sum(cluster_stars, 0.0) / len(cluster_stars)
+                restaurant_data['stars_by_cluster'][cluster] = average_stars
 
     return restaurants
