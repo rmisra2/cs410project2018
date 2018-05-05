@@ -44,3 +44,24 @@ def create_adjusted_reviews_for_restaurants(reviews, restaurants, clusters):
                 restaurant_data['stars_by_cluster'][cluster] = average_stars
 
     return restaurants
+
+def adjusted_search(adjusted_reviews, num_search_results=10):
+    c = 0
+    out = []
+
+    out.append('Restaurant Results:')
+    out.append('-----------------------------------------------')
+
+    for business_id, restaurant_data in adjusted_reviews.items():
+        out.append(restaurant_data['name'])
+        out.append('Overall rating: {}'.format(restaurant_data['stars']))
+        out.append('Average cluster rating:')
+        for cluster, rating in restaurant_data['stars_by_cluster'].items():
+            out.append('\t Cluster {}: {}'.format(cluster, rating))
+        out.append('-----------------------------------------------')
+
+        c += 1
+        if c > num_search_results:
+            break
+
+    return out

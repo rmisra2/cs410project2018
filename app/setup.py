@@ -5,5 +5,5 @@ NUM_REVIEWS_TO_PROCESS = 200
 NUM_RESTAURANTS_TO_PROCESS = -1
 
 # nltk.download('punkt')
-# parse_reviews_dataset(NUM_REVIEWS_TO_PROCESS)
+parse_reviews_dataset(NUM_REVIEWS_TO_PROCESS)
 parse_business_dataset(NUM_RESTAURANTS_TO_PROCESS)

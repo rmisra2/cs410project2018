@@ -4,7 +4,7 @@ import community
 from similarity_graph import create_similarity_graph
 from process_data import group_reviews_by_users
 from clustering import convert_similarity_graph_to_nx_graph
-from reverse_index import create_adjusted_reviews_for_restaurants
+from reverse_index import create_adjusted_reviews_for_restaurants, adjusted_search
 
 NUM_REVIEWS = 200
 NUM_RESTAURANTS = 69047
@@ -61,3 +61,16 @@ def create_reverse_index():
             if 'stars_by_cluster' in restaurant_data:
                 adjusted_restaurant_reviews_filtered[business_id] = restaurant_data
         json.dump(adjusted_restaurant_reviews_filtered, arff)
+
+def generate_adjusted_search():
+    adjusted_restaurants_filtered_file = './../data/adjusted_restaurants_filtered_{}.json'.format(NUM_RESTAURANTS)
+    adjusted_restaurants_filtered_filename = os.path.join(dirname, adjusted_restaurants_filtered_file)
+    with open(adjusted_restaurants_filtered_filename) as arff:
+        adjusted_reviews = json.load(arff)
+
+    search_output_file = './../data/search_output_{}.json'.format(NUM_RESTAURANTS)
+    search_output_filename = os.path.join(dirname, search_output_file)
+    with open(search_output_filename, 'w') as asof:
+        output = adjusted_search(adjusted_reviews)
+        for line in output:
+            asof.write('{}\n'.format(line))
