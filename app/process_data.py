@@ -93,8 +93,6 @@ def parse_business_dataset(n=-1):
     restaurants = []
 
     if n > 0:
-        outfile_restaurants = './../data/restaurants_{}.json'.format(n)
-        outfile_restaurants_filename = os.path.join(dirname, outfile_restaurants)
         c = 0
 
     with open(infile_restaurants_filename) as f:
@@ -114,6 +112,9 @@ def parse_business_dataset(n=-1):
                 c += 1
                 if c > n:
                     break
+
+    outfile_restaurants = './../data/restaurants_{}.json'.format(len(restaurants))
+    outfile_restaurants_filename = os.path.join(dirname, outfile_restaurants)
 
     with open(outfile_restaurants_filename, 'w') as outf:
         json.dump(restaurants, outf)
