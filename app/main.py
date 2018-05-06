@@ -2,14 +2,11 @@ import networkx as nx
 import os, json
 import community
 import time
+from config import NUM_REVIEWS, NUM_RESTAURANTS, SIMILARITY_THRESHOLD
 from similarity_graph import create_similarity_graph
 from process_data import create_combined_user_reviews
 from clustering import convert_similarity_graph_to_nx_graph
 from reverse_index import create_adjusted_reviews_for_restaurants, adjusted_search
-
-NUM_REVIEWS = 200
-NUM_RESTAURANTS = 69047
-SIMILARITY_THRESHOLD = 0.5
 
 def generate_similarity_graph():
     dirname = os.path.dirname(__file__)
