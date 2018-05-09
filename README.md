@@ -14,6 +14,8 @@ pip install -r requirements.txt
 ```
 
 ## Running The App
+Choose your configuration options by setting the values in `app/config.py`.
+
 Run:
 ```
 python3 app/setup.py
