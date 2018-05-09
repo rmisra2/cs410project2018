@@ -13,7 +13,7 @@ Then create a new folder called `data`. This will contain our program's intermed
 pip install -r requirements.txt
 ```
 
-### Running The App
+## Running The App
 Run:
 ```
 python3 app/setup.py
