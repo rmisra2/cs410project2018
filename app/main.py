@@ -32,6 +32,7 @@ def generate_similarity_graph():
             print('similarity graph file created: {}'.format(similarity_graph_filename))
 
 # TODO: explicitly set the number of partitions?
+#       can set a param to set the number of partitions or use best_partition by default
 def create_partition():
     dirname = os.path.dirname(__file__)
     similarity_graph_file = './../data/similarity_graph_{}.json'.format(NUM_REVIEWS)
@@ -110,7 +111,7 @@ def generate_adjusted_search():
             asof.write('{}\n'.format(line))
         print('search results file created: {}'.format(search_output_filename))
 
-
+# PIPELINE
 generate_similarity_graph()
 create_partition()
 create_reverse_index()
