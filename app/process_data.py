@@ -1,21 +1,6 @@
 import json
 import os
 
-infile = './../dataset/review.json'
-infile_restaurants = './../dataset/business.json'
-
-# TODO: make sure data folder exists
-outfile = './../data/reviews.json'
-outfile_restaurants = './../data/restaurants.json'
-
-dirname = os.path.dirname(__file__)
-
-infile_filename = os.path.join(dirname, infile)
-outfile_filename = os.path.join(dirname, outfile)
-
-infile_restaurants_filename = os.path.join(dirname, infile_restaurants)
-outfile_restaurants_filename = os.path.join(dirname, outfile_restaurants)
-
 BUSINESS_CATEGORIES = ['Restaurants', 'Food']
 
 def parse_reviews_dataset(n=-1):
@@ -26,11 +11,14 @@ def parse_reviews_dataset(n=-1):
     reviews = []
 
     if n > 0:
-        outfile = './../data/reviews_{}.json'.format(n)
-        outfile_filename = os.path.join(dirname, outfile)
         c = 0
 
-    with open(infile_filename) as f:
+    dirname = os.path.dirname(__file__)
+
+    infile_reviews = './../dataset/review.json'
+    infile_reviews_filename = os.path.join(dirname, infile_reviews)
+
+    with open(infile_reviews_filename) as f:
         for line in f:
             review_data = json.loads(line)
             review = {
@@ -47,7 +35,10 @@ def parse_reviews_dataset(n=-1):
                 if c > n:
                     break
 
-    with open(outfile_filename, 'w') as outf:
+    outfile_reviews = './../data/reviews_{}.json'.format(n) if n > 0 else './../data/reviews.json'
+    outfile_reviews_filename = os.path.join(dirname, outfile_reviews)
+
+    with open(outfile_reviews_filename, 'w') as outf:
         json.dump(reviews, outf)
 
 def group_reviews_by_users(reviews):
@@ -95,6 +86,11 @@ def parse_business_dataset(n=-1):
 
     if n > 0:
         c = 0
+
+    dirname = os.path.dirname(__file__)
+
+    infile_restaurants = './../dataset/business.json'
+    infile_restaurants_filename = os.path.join(dirname, infile_restaurants)
 
     with open(infile_restaurants_filename) as f:
         for line in f:
