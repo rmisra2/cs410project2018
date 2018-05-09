@@ -3,21 +3,29 @@
 ## Setup
 Use python3
 
-Create a new folder called `data`. This will contain our program's data files, whereas `dataset` will contain what is provided from Yelp.
+### Yelp Dataset
+Download the JSON format of the [Yelp Dataset](https://www.yelp.com/dataset). Extract the files and put them in a folder called `dataset`.
+
+Then create a new folder called `data`. This will contain our program's intermediate data files and output files.
 
 ### Install Dependencies
 ```
 pip install -r requirements.txt
 ```
 
-Then run:
+### Running The App
+Run:
 ```
 python3 app/setup.py
 ```
 
 You should theoritically only need to do it once.
 
-## Processing Dataset
-`setup.py` will create the reviews data file we will need.
+Then run:
+```
+python3 app/main.py
+```
 
-It will call the `parse_reviews_dataset()` function. It's slow and uses a lot of RAM, so make sure you use a reasonable review size.
+This will run the entire pipeline and create the intermediate data files and search results output as it runs.
+
+The search results/output of the pipeline will be in the `data` folder, called something like `search_output_###.txt`.
