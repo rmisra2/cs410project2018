@@ -13,8 +13,9 @@ The function of this tool is to filter Yelp restaurant reviews that are more rel
   B. After parsing data we needed to create a similarity graph. We first transformed the data documents into TF-IDF vectors, and then computed the cosine similarity between them. To implement this, we used the TfidfVectorizer in the Python packages of scikit-learn. We created a function called `create_similarity_graph()`, that takes in user_combined_reviews and returns a dictionary where the key is the user_id which points to an array of dictionaries with the similarity score with other users.
 
   C. The next step is to cluster users based on their similarity. We used the Networkx Python library along with the Community API  to convert the similarity dictionaries to a graph by connecting nodes to each user with weighted edges that represent the level of similarity between users. The functions to implement this stage are stated below:
+  
           1. create_sim_graph(): First we had to convert our similarities from the previous step into a graph using the Networkx library.
-
+          
           2. community.best_partition(): We used this function from the Community API to partition/cluster our graph since `nx.clustering()` only gives us clustering coefficients which is not helpful for the project as we need our function to indicate groups for data to be clustered in.
 
    D. Once we clustered our users based on their reviews’ similarities, we need a way to use that information while doing a restaurant search. Since our goal was to show a breakdown of how each clustered group rated a restaurant in addition to its overall rating, we had to create a “reverse index.” In this context, the restaurant data from the dataset only included the overall rating for each restaurant. We called what we created a “reverse index” since we go back to each restaurant and add each cluster’s average rating back into each restaurants data attributes. We can then display these results in our enhanced restaurant search. This was done by these three functions:
@@ -25,7 +26,7 @@ The function of this tool is to filter Yelp restaurant reviews that are more rel
 
           3. adjusted_search(): given the restaurant data with the clustered group’s average ratings, this generates a formatted search result that displays each restaurant’s name, overall rating, and average rating from each cluster. There is a second parameter that allows the user to limit the number of restaurants to display.
 
-## Team Dynamic/Project Breakdown:
+### Team Dynamic/Project Breakdown:
 Varun Munjeti: Came up with project Idea and what to do step by step. I worked on writing the code for the main pipeline and the reverse index. Also worked on portions of the report and video.
 
 Richa Misra: Worked on creating a timeline and scheduling the scope of the project. Responsible for the “clustering” aspect of the project such as trying to implement the similarity graph in order to use the `nx.clustering()` function (which was our first approach) and testing it on sizeable review sets. Once we decided that `nx.clustering()` does not give us the output desired, we deleted our old clustering implementation. Worked on learning to implement the Community API (as recommended by our TA) and using the best_partition function and testing it with multiple review dataset sizes to see if results made sense with the scope to the project. Tested it with different similarity threshold parameters as well to see how the results would change and see which threshold value will be more valuable to the project. Helped write the documentation and conduct the video in the video presentation.
